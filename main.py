@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
 load_dotenv(override=True)
 
-from llm.groq_llm import GroqLLM
+from llm.llm_enum import LLMEnum
 
-llm = GroqLLM()
+llm = LLMEnum.LLaMa3_8b.value
 
-print(llm.query("", ""))
+print(llm.query("", "What is the best thing you know?"))
