@@ -28,5 +28,10 @@ class Agent:
     def take_action(self, response : str) -> None:
         action_data = Parse.action(response)
         if action_data[Action.NAME] in self.actions:
-            print(">Intends to " + action_data[Action.NAME])
+            selected_action = self.actions[action_data[Action.NAME]]
+            del action_data[Action.NAME]
+            action_data[Action.CALLER_AGENT] = self
+            selected_action.execute(action_data)
+        else:
+            print("Failed do find action")
 

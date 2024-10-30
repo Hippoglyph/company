@@ -2,6 +2,8 @@ class Action:
 
     NAME = "action_name"
 
+    CALLER_AGENT = "caller_agent"
+
     def get_name(self) -> str:
         pass
 
@@ -11,4 +13,5 @@ class Action:
     def get_arguments(self) -> dict:
         return []
     
-    # TODO execute
+    def execute(self, arguments : dict) -> None:
+        pass

@@ -34,4 +34,5 @@ Each turn the agent has four things to do:
 3. Argue what your next best action is to achieve your goal.
 4. Perform your action.
 
-Note that 1,2,3 are your private thoughts and will not be shared with anyone. Only the action (4) will shared with others.
+Keep in mind that during step 1,2 and 3 all output are your private thoughts and will not be shared with anyone.
+Only your actions will be shared with other agents (step 4).

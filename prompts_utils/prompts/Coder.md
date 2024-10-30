@@ -11,8 +11,9 @@ The Architect will approach you with a request involving software. To your aid y
 3. If the request does not require any new code to be written, return to the Architect.
 4. If code is required to be written. Then make a draft.
 5. Send the draft to the code reviewer.
-6. Get approval from the code reviewer.
-7. Return to the Architect
+6. Redraft your code and resend them the code reviewer as many times as it takes.
+7. Get verbaal approval from the code reviewer.
+8. Return to the Architect
 
 # Your Actions
 
