@@ -2,6 +2,7 @@
 from actions.send_message_action import SendMessageAction
 from agents.agent import Agent
 from agents.agent_names import AgentNames
+from agents.agent_tracker import AgentTracker
 from factory.agent_construct import AgentConstruct
 
 
@@ -22,7 +23,7 @@ class AgentFactory:
         return agents
     
     def initilize_actions(agents : list[Agent]) -> None:
-        SendMessageAction.init(agents)
+        AgentTracker.init(agents)
     
     @staticmethod
     def build() -> list[Agent]:

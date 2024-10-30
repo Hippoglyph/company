@@ -1,10 +1,8 @@
 from actions.action import Action
-from agents.agent import Agent
+from agents.agent_tracker import AgentTracker
 
 
 class SendMessageAction(Action):
-
-    message_map = {}
 
     RECEIVER = "receiver"
     CONTENT = "content"
@@ -31,22 +29,15 @@ class SendMessageAction(Action):
         # expand
         return None
     
-    def execute(self, arguments : dict) -> None:
+    def execute(self, arguments : dict) -> tuple[str, str]:
         if SendMessageAction._sanity_check(arguments):
             print(SendMessageAction._sanity_check(arguments))
-            return
+            return None, None
         
-        callback = SendMessageAction.message_map.get(arguments[SendMessageAction.RECEIVER])
-        if callback is None:
-            response = input(f"{arguments[SendMessageAction.RECEIVER]}>")
-            arguments[Action.CALLER_AGENT].send_message(response)
-        else:
-            callback(arguments[SendMessageAction.CONTENT])
-
-    
-    @staticmethod
-    def init(agents : list[Agent]) -> None:
-        for agent in agents:
-            SendMessageAction.message_map[agent.get_name()] = agent.send_message
-
+        agent = AgentTracker.get(arguments[SendMessageAction.RECEIVER])
+        if agent is None:
+            human_input = input(">")
+            return arguments[Action.CALLER_AGENT].get_name(), arguments[Action.CALLER_AGENT].send_message(human_input)
+        header = f"{arguments[Action.CALLER_AGENT].get_name()}:\n"
+        return arguments[SendMessageAction.RECEIVER], agent.send_message(header + arguments[SendMessageAction.CONTENT])
         
