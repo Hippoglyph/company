@@ -14,9 +14,8 @@ class AgentFactory:
 
         agents += [
             AgentConstruct(AgentNames.CODER)
-                .with_action(SendMessageAction([AgentNames.ARCHITECT]))
-                .with_action(SendMessageAction([AgentNames.CODE_REVIEWER])),
-
+                .with_action(SendMessageAction([AgentNames.ARCHITECT, AgentNames.CODE_REVIEWER]))
+            ,
             AgentConstruct(AgentNames.CODE_REVIEWER)
                 .with_action(SendMessageAction([AgentNames.CODER]))
         ]

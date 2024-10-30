@@ -14,6 +14,9 @@ class Agent:
 
     def get_name(self) -> str:
         return self.name
+    
+    def get_system_message(self) -> str:
+        return self.system_message
 
     def send_message(self, message : str) -> str:
         response = self.llm.query(self.system_message, message, self.chat_history)
