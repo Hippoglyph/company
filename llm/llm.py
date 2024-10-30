@@ -1,4 +1,3 @@
-import time
 from openai.resources.chat import Chat
 
 class LLM:
