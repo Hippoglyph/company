@@ -27,7 +27,7 @@ class PromptHandler:
         return "\n".join([PromptHandler._get_action_format(action) for action in actions])
     
     def _get_action_format(action : Action) -> str:
-        return f"```\naction_name: {action.get_name()}\ndescription: {action.get_description()}\n---\n{PromptHandler._get_action_arguments_format(action)}\n```"
+        return f"```\n{Action.NAME}: {action.get_name()}\ndescription: {action.get_description()}\n---\n{PromptHandler._get_action_arguments_format(action)}\n```"
     
     def _get_action_arguments_format(action : Action) -> str:
         return "\n\n".join([f"argument name: {name}\nargument description: {description}" for name, description in action.get_arguments().items()])

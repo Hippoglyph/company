@@ -1,5 +1,7 @@
 class Action:
 
+    NAME = "action_name"
+
     def get_name(self) -> str:
         pass
 

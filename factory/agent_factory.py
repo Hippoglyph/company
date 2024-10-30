@@ -1,3 +1,4 @@
+
 from actions.send_message_action import SendMessageAction
 from agents.agent import Agent
 from agents.agent_names import AgentNames
@@ -13,11 +14,20 @@ class AgentFactory:
         agents += [
             AgentConstruct(AgentNames.CODER)
                 .with_action(SendMessageAction([AgentNames.ARCHITECT]))
+                .with_action(SendMessageAction([AgentNames.CODE_REVIEWER])),
+
+            AgentConstruct(AgentNames.CODE_REVIEWER)
+                .with_action(SendMessageAction([AgentNames.CODER]))
         ]
         return agents
     
+    def initilize_actions(agents : list[Agent]) -> None:
+        SendMessageAction.init(agents)
+    
     @staticmethod
     def build() -> list[Agent]:
-        return [agent.build() for agent in AgentFactory.create_agents()]
+        agents = [agent.build() for agent in AgentFactory.create_agents()]
+        AgentFactory.initilize_actions(agents)
+        return agents
 
 

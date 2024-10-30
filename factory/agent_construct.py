@@ -20,7 +20,7 @@ class AgentConstruct:
             raise RuntimeError(f"Agent {self.name} has no actions")
 
         system_message = PromptHandler.get_agent_prompt(self.name, self.actions)
-        return Agent(name = self.name, llm=self.llm, system_message=system_message)
+        return Agent(name = self.name, llm=self.llm, system_message=system_message, actions=self.actions)
 
     
     def with_llm(self, llm) -> "AgentConstruct":
