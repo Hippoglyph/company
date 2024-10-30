@@ -1,5 +1,7 @@
+from actions.send_message_action import SendMessageAction
+from agents.agent import Agent
+from agents.agent_names import AgentNames
 from factory.agent_construct import AgentConstruct
-from prompts_utils.prompt_handler import PromptHandler
 
 
 class AgentFactory:
@@ -9,7 +11,13 @@ class AgentFactory:
         agents = []
 
         agents += [
-            AgentConstruct("Coder")
-                .with_system_message(PromptHandler.get_coder_prompt())
+            AgentConstruct(AgentNames.CODER)
+                .with_action(SendMessageAction([AgentNames.ARCHITECT]))
         ]
         return agents
+    
+    @staticmethod
+    def build() -> list[Agent]:
+        return [agent.build() for agent in AgentFactory.create_agents()]
+
+
