@@ -1,3 +1,4 @@
+from functools import cache
 import html
 import os
 import graphviz
@@ -13,24 +14,32 @@ class GraphMaker:
         self.name = name
 
         for agent in agents:
-            content = agent.system_message[:]
-            print(content)
-            tooltip_content = html.escape(content)
+            tooltip_content = html.escape(agent.system_message)
             self.graph.node(agent.get_name(), agent.get_name(), tooltip = tooltip_content)
-            break
 
         self.render()
-
-    def sanitize_tooltip(self, content: str) -> str:
-        """Sanitize the tooltip content by escaping special HTML characters."""
-        sanitized_content = html.escape(content)
-        return (
-            f"<TABLE BORDER='0' CELLBORDER='1' CELLSPACING='0' "
-            f"STYLE='max-height: 150px; overflow-y: auto; display: block;'>"
-            f"<TR><TD>{sanitized_content}</TD></TR></TABLE>"
-        )
 
     def render(self) -> None:
         file_path = os.path.join(GraphMaker.PARENT_FILE_PATH, "tmp", self.name)
         self.graph.render(file_path, format='svg')
+        self.create_html_with_js(file_path + '.svg')
+
+    @staticmethod
+    @cache
+    def _get_html_template() -> str:
+        file_path = os.path.join(GraphMaker.PARENT_FILE_PATH, "resources", "html_template.html")
+        with open(file_path, 'r') as f:
+            html = f.read()
+        return html
+
+    def create_html_with_js(self, svg_file : str) -> None:
+        with open(svg_file, 'r') as f:
+            svg_content = f.read()
+        template = GraphMaker._get_html_template()
+        
+        html_content = template.replace("!SVG_REPLACE!", svg_content)
+        
+        html_file = svg_file.replace('.svg', '.html')
+        with open(html_file, 'w') as f:
+            f.write(html_content)
         

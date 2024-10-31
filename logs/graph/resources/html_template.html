@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .tooltip-container {
+            position: relative;
+        }
+        .tooltip {
+            position: absolute;
+            background-color: white;
+            border: 1px solid black;
+            padding: 10px;
+            max-width: 800px;
+            width: max-content;
+            overflow-y: auto;
+            max-height: 300px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            white-space: pre-wrap;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="tooltip-container">
+        
+        !SVG_REPLACE!
+        
+        <div id="tooltip" class="tooltip"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.tooltip-container');
+            const tooltip = document.getElementById('tooltip');
+            let timeoutId;
+
+            function showTooltip(event) {
+                clearTimeout(timeoutId);
+                const node = event.target.closest('.node');
+                if (node) {
+                    const link = node.querySelector('a');
+                    if (link) {
+                        const title = link.getAttribute('xlink:title') || link.dataset.tooltip;
+                        if (title) {
+                            tooltip.textContent = title;
+                            tooltip.style.display = 'block';
+                            
+                            const rect = node.getBoundingClientRect();
+                            const tooltipRect = tooltip.getBoundingClientRect();
+                            
+                            // Calculate available space above and below
+                            const spaceAbove = rect.top;
+                            const spaceBelow = window.innerHeight - rect.bottom;
+                            
+                            // Position tooltip
+                            if (spaceBelow >= tooltipRect.height || spaceBelow > spaceAbove) {
+                                // Position below the node
+                                tooltip.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+                            } else {
+                                // Position above the node
+                                tooltip.style.top = (rect.top + window.scrollY - tooltipRect.height - 5) + 'px';
+                            }
+                            
+                            // Horizontal positioning
+                            let left = rect.left + window.scrollX;
+                            if (left + tooltipRect.width > window.innerWidth) {
+                                left = window.innerWidth - tooltipRect.width - 5;
+                            }
+                            tooltip.style.left = left + 'px';
+                        }
+                    }
+                }
+            }
+
+            function hideTooltip() {
+                timeoutId = setTimeout(() => {
+                    tooltip.style.display = 'none';
+                }, 300);
+            }
+
+            container.addEventListener('mouseover', showTooltip);
+            container.addEventListener('mouseout', hideTooltip);
+            tooltip.addEventListener('mouseover', () => clearTimeout(timeoutId));
+            tooltip.addEventListener('mouseout', hideTooltip);
+
+            // Store tooltip content in data attribute
+            document.querySelectorAll('.node a').forEach(node => {
+                const title = node.getAttribute('xlink:title');
+                if (title) {
+                    node.dataset.tooltip = title;
+                    node.removeAttribute('xlink:title');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

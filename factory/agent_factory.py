@@ -13,6 +13,10 @@ class AgentFactory:
         agents = []
 
         agents += [
+            AgentConstruct(AgentNames.ARCHITECT)
+                .with_action(SendMessageAction([AgentNames.CODER]))
+                .is_human()
+            ,
             AgentConstruct(AgentNames.CODER)
                 .with_action(SendMessageAction([AgentNames.ARCHITECT, AgentNames.CODE_REVIEWER]))
             ,

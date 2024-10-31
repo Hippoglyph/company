@@ -39,6 +39,16 @@ class PromptHandler:
     @staticmethod
     def _get_main_prompt() -> str:
         return PromptHandler._read_file("main")
+    
+    @staticmethod
+    @cache
+    def get_action(action_name : str, **kwarg) -> str:
+        action_rows = ["<action>"]
+        action_rows += [f"<action_name>{action_name}</action_name>"]
+        for key, value in kwarg.items():
+            action_rows += [f"<{key}>{value}</{key}>"]
+        action_rows += ["</action>"]
+        return "\n".join(action_rows)
 
     @staticmethod
     @cache

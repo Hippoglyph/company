@@ -13,7 +13,7 @@ class Action:
     def get_arguments(self) -> dict:
         return []
     
-    def execute(self, arguments : dict) -> tuple[str, str]:
+    def execute(self, arguments : dict) -> str:
         pass
 
 

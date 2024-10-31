@@ -1,6 +1,4 @@
 from actions.action import Action
-from agents.agent_tracker import AgentTracker
-
 
 class SendMessageAction(Action):
 
@@ -29,15 +27,17 @@ class SendMessageAction(Action):
         # expand
         return None
     
-    def execute(self, arguments : dict) -> tuple[str, str]:
+    def execute(self, arguments : dict) -> str:
         if SendMessageAction._sanity_check(arguments):
             print(SendMessageAction._sanity_check(arguments))
-            return None, None
+            return None
         
-        agent = AgentTracker.get(arguments[SendMessageAction.RECEIVER])
-        if agent is None:
-            human_input = input(">")
-            return arguments[Action.CALLER_AGENT].get_name(), arguments[Action.CALLER_AGENT].send_message(human_input)
         header = f"{arguments[Action.CALLER_AGENT].get_name()}:\n"
-        return arguments[SendMessageAction.RECEIVER], agent.send_message(header + arguments[SendMessageAction.CONTENT])
+        return header + arguments[SendMessageAction.CONTENT]
+    
+    def get_receiver_name(self, arguments : dict) -> str:
+        return arguments[SendMessageAction.RECEIVER] # TODO Sanity check
+    
+    def get_relations_names(self) -> list[str]:
+        return self.relations_names
         

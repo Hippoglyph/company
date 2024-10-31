@@ -1,3 +1,4 @@
+from actions.send_message_action import SendMessageAction
 from agents.agent_tracker import AgentTracker
 from factory.agent_factory import AgentFactory
 from logs.graph.graph_maker import GraphMaker
@@ -6,14 +7,18 @@ def run():
 
     agents = AgentFactory.build()
 
-    graph = GraphMaker()
-    graph.new_graph("graph", agents)
+    #graph = GraphMaker()
+    #graph.new_graph("graph", agents)
 
-    agent = agents[0]
+    for agent_candidate in agents:
+        if agent_candidate.is_human(): # Find first human
+            agent = agent_candidate
+            break
 
-    seed_msg = input(">")
-    response = agent.send_message(seed_msg)
+    response = agent.send_message("Welcome to The Company. How can we help you?")
     while True:
+        print(f"{agent.name}:\n", response)
         action, arguments = agent.choose_action(response)
-        agent_name, response = action.execute(arguments)
-        agent = AgentTracker.get(agent_name)
+        if isinstance(action, SendMessageAction):
+            agent = AgentTracker.get(action.get_receiver_name(arguments))
+        response = agent.send_message(action.execute(arguments))
