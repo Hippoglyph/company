@@ -1,6 +1,7 @@
 
+from actions.read_file_action import ReadFileAction
 from actions.send_message_action import SendMessageAction
-from actions.write_to_file import WriteToFile
+from actions.write_file_action import WriteFileAction
 from agents.agent import Agent
 from agents.agent_names import AgentNames
 from agents.agent_tracker import AgentTracker
@@ -20,10 +21,12 @@ class AgentFactory:
             ,
             AgentConstruct(AgentNames.CODER)
                 .with_action(SendMessageAction([AgentNames.ARCHITECT, AgentNames.CODE_REVIEWER]))
-                .with_action(WriteToFile())
+                .with_action(WriteFileAction())
+                .with_action(ReadFileAction())
             ,
             AgentConstruct(AgentNames.CODE_REVIEWER)
                 .with_action(SendMessageAction([AgentNames.CODER]))
+                .with_action(ReadFileAction())
         ]
         return agents
     
