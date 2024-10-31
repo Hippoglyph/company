@@ -15,10 +15,8 @@ class PromptHandler:
         main_prompt = PromptHandler._get_main_prompt()
         main_mission = PromptHandler._get_main_mission_prompt()
         agent_mission = PromptHandler._read_file(agent_name)
-        agent_mission = agent_mission.format(**{
-            PromptHandler.ACTIONS_PROMPT_REPLACE : PromptHandler._get_actions_format(actions)
-        })
         return main_prompt.format(**{
+            PromptHandler.ACTIONS_PROMPT_REPLACE : PromptHandler._get_actions_format(actions),
             PromptHandler.MAIN_PROMPT_REPLACE : main_mission,
             PromptHandler.AGENT_PROMPT_REPLACE : agent_mission
         })

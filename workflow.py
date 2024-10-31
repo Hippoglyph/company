@@ -17,7 +17,6 @@ def run():
 
     response = agent.send_message("Welcome to The Company. How can we help you?")
     while True:
-        print(f"{agent.name}:\n", response)
         action, arguments = agent.choose_action(response)
         graph.action(action=action, arguments=arguments, response=response)
         if isinstance(action, SendMessageAction):

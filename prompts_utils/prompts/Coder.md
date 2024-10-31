@@ -14,7 +14,3 @@ The Architect will approach you with a request involving software. To your aid y
 6. Redraft your code and resend them the code reviewer as many times as it takes.
 7. Get verbal approval from the code reviewer.
 8. Return to the Architect
-
-# Your Actions
-
-{actions}
