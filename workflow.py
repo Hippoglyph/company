@@ -7,8 +7,8 @@ def run():
 
     agents = AgentFactory.build()
 
-    #graph = GraphMaker()
-    #graph.new_graph("graph", agents)
+    graph = GraphMaker()
+    graph.new_graph("graph", agents)
 
     for agent_candidate in agents:
         if agent_candidate.is_human(): # Find first human
@@ -19,6 +19,7 @@ def run():
     while True:
         print(f"{agent.name}:\n", response)
         action, arguments = agent.choose_action(response)
+        graph.action(action=action, arguments=arguments, response=response)
         if isinstance(action, SendMessageAction):
             agent = AgentTracker.get(action.get_receiver_name(arguments))
         response = agent.send_message(action.execute(arguments))

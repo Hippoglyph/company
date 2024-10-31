@@ -54,5 +54,9 @@ class Agent:
                 }
                 return PromptHandler.get_action(action_name = action_name, **arguments)
         raise RuntimeError("Human has no SendMessageAction")
+    
+    def get_actions(self) -> list[Action]:
+        return self.actions.values()
+    
         
 

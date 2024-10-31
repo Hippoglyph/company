@@ -3,6 +3,8 @@ import html
 import os
 import graphviz
 
+from actions.action import Action
+from actions.send_message_action import SendMessageAction
 from agents.agent import Agent
 
 class GraphMaker:
@@ -12,10 +14,21 @@ class GraphMaker:
     def new_graph(self, name : str, agents : list[Agent]) -> None:
         self.graph = graphviz.Digraph()
         self.name = name
+        self.edge_id = 0
 
         for agent in agents:
             tooltip_content = html.escape(agent.system_message)
             self.graph.node(agent.get_name(), agent.get_name(), tooltip = tooltip_content)
+
+        self.render()
+
+    def action(self, action : Action, arguments : dict, response : str) -> None:
+        self.edge_id += 1
+        if isinstance(action, SendMessageAction):
+            tooltip_content = html.escape(response)
+            self.graph.edge(arguments[Action.CALLER_AGENT].get_name(), arguments[SendMessageAction.RECEIVER], label=str(self.edge_id), tooltip = tooltip_content)
+        else:
+            raise RuntimeError("Graph: No action but SendMessage is implmented yet")
 
         self.render()
 

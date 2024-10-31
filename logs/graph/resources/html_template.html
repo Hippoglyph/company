@@ -40,16 +40,16 @@
 
             function showTooltip(event) {
                 clearTimeout(timeoutId);
-                const node = event.target.closest('.node');
-                if (node) {
-                    const link = node.querySelector('a');
+                const element = event.target.closest('.node, .edge');
+                if (element) {
+                    const link = element.querySelector('a');
                     if (link) {
                         const title = link.getAttribute('xlink:title') || link.dataset.tooltip;
                         if (title) {
                             tooltip.textContent = title;
                             tooltip.style.display = 'block';
                             
-                            const rect = node.getBoundingClientRect();
+                            const rect = element.getBoundingClientRect();
                             const tooltipRect = tooltip.getBoundingClientRect();
                             
                             // Calculate available space above and below
@@ -58,10 +58,10 @@
                             
                             // Position tooltip
                             if (spaceBelow >= tooltipRect.height || spaceBelow > spaceAbove) {
-                                // Position below the node
+                                // Position below the element
                                 tooltip.style.top = (rect.bottom + window.scrollY + 5) + 'px';
                             } else {
-                                // Position above the node
+                                // Position above the element
                                 tooltip.style.top = (rect.top + window.scrollY - tooltipRect.height - 5) + 'px';
                             }
                             
@@ -88,11 +88,11 @@
             tooltip.addEventListener('mouseout', hideTooltip);
 
             // Store tooltip content in data attribute
-            document.querySelectorAll('.node a').forEach(node => {
-                const title = node.getAttribute('xlink:title');
+            document.querySelectorAll('.node a, edge a').forEach(element => {
+                const title = element.getAttribute('xlink:title');
                 if (title) {
-                    node.dataset.tooltip = title;
-                    node.removeAttribute('xlink:title');
+                    element.dataset.tooltip = title;
+                    element.removeAttribute('xlink:title');
                 }
             });
         });
