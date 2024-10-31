@@ -30,7 +30,7 @@ class SendMessageAction(Action):
     def execute(self, arguments : dict) -> str:
         if SendMessageAction._sanity_check(arguments):
             print(SendMessageAction._sanity_check(arguments))
-            return None
+            return None # TODO fix
         
         header = f"{arguments[Action.CALLER_AGENT].get_name()}:\n"
         return header + arguments[SendMessageAction.CONTENT]

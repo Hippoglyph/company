@@ -1,5 +1,6 @@
 
 from actions.send_message_action import SendMessageAction
+from actions.write_to_file import WriteToFile
 from agents.agent import Agent
 from agents.agent_names import AgentNames
 from agents.agent_tracker import AgentTracker
@@ -19,6 +20,7 @@ class AgentFactory:
             ,
             AgentConstruct(AgentNames.CODER)
                 .with_action(SendMessageAction([AgentNames.ARCHITECT, AgentNames.CODE_REVIEWER]))
+                .with_action(WriteToFile())
             ,
             AgentConstruct(AgentNames.CODE_REVIEWER)
                 .with_action(SendMessageAction([AgentNames.CODER]))

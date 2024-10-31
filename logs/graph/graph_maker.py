@@ -28,7 +28,8 @@ class GraphMaker:
             tooltip_content = html.escape(response)
             self.graph.edge(arguments[Action.CALLER_AGENT].get_name(), arguments[SendMessageAction.RECEIVER], label=str(self.edge_id), tooltip = tooltip_content)
         else:
-            raise RuntimeError("Graph: No action but SendMessage is implmented yet")
+            print("Log action TODO")
+            #raise RuntimeError("Graph: No action but SendMessage is implmented yet")
 
         self.render()
 
