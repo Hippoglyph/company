@@ -4,11 +4,11 @@ from factory.agent_factory import AgentFactory
 from logs.graph.graph_maker import GraphMaker
 
 def run():
-    
-    agents = AgentFactory.build()
+    run_id = "test_run"
+    agents = AgentFactory.build(run_id)
 
     graph = GraphMaker()
-    graph.new_graph("graph", agents)
+    graph.new_graph(run_id, agents)
 
     for agent_candidate in agents:
         if agent_candidate.is_human(): # Find first human

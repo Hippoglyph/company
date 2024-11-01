@@ -10,7 +10,7 @@ from factory.agent_construct import AgentConstruct
 class AgentFactory:
 
     @staticmethod
-    def create_agents() -> list[AgentConstruct]:
+    def create_agents(run_id : str) -> list[AgentConstruct]:
         agents = []
 
         agents += [
@@ -20,12 +20,12 @@ class AgentFactory:
             ,
             AgentConstruct(AgentNames.CODER)
                 .with_action(SendMessageAction([AgentNames.ARCHITECT, AgentNames.CODE_REVIEWER]))
-                .with_action(WriteFileAction())
-                .with_action(ReadFileAction())
+                .with_action(WriteFileAction(run_id))
+                .with_action(ReadFileAction(run_id))
             ,
             AgentConstruct(AgentNames.CODE_REVIEWER)
                 .with_action(SendMessageAction([AgentNames.CODER]))
-                .with_action(ReadFileAction())
+                .with_action(ReadFileAction(run_id))
         ]
         return agents
     
@@ -33,8 +33,8 @@ class AgentFactory:
         AgentTracker.init(agents)
     
     @staticmethod
-    def build() -> list[Agent]:
-        agents = [agent.build() for agent in AgentFactory.create_agents()]
+    def build(run_id : str) -> list[Agent]:
+        agents = [agent.build() for agent in AgentFactory.create_agents(run_id)]
         AgentFactory.initilize_actions(agents)
         return agents
 

@@ -1,11 +1,13 @@
-from pathlib import Path
 from actions.action import Action
-from utils.file_utils import FileUtils
+from enviroment.terminal import Terminal
 
 
 class ReadFileAction(Action):
 
     FILE_PATH = "file_path"
+
+    def __init__(self, run_id : str):
+        self.terminal = Terminal(run_id)
 
     def get_name(self) -> str:
         return "ReadFile"
@@ -19,12 +21,6 @@ class ReadFileAction(Action):
     def execute(self, arguments : dict) -> str:
         # TODO sanity check
         relative_path = arguments[ReadFileAction.FILE_PATH]
-        full_path : Path = FileUtils.get_root() / relative_path
+        file_content = self.terminal.bash(f"cat {relative_path}")
 
-        if not full_path.exists():
-            return f"The file {relative_path} does not exist"
-        
-        with open(full_path, 'r') as file:
-            content = file.readlines()
-
-        return f"The file {relative_path} contained:\n{content}"
+        return f"The file {relative_path} contained:\n{file_content}"

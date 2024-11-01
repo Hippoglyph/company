@@ -1,12 +1,14 @@
-from pathlib import Path
 from actions.action import Action
-from utils.file_utils import FileUtils
+from enviroment.terminal import Terminal
 
 
 class WriteFileAction(Action):
 
     FILE_PATH = "file_path"
     CONTENT = "content"
+
+    def __init__(self, run_id : str):
+        self.terminal = Terminal(run_id)
 
     def get_name(self) -> str:
         return "WriteFile"
@@ -21,11 +23,4 @@ class WriteFileAction(Action):
     
     def execute(self, arguments : dict) -> str:
         # TODO sanity check
-        relative_path = arguments[WriteFileAction.FILE_PATH]
-        full_path : Path = FileUtils.get_root() / relative_path
-        full_path.parent.mkdir(parents=True, exist_ok=True)
-
-        with open(full_path, 'w') as file:
-            file.write(arguments[WriteFileAction.CONTENT])
-
-        return f"Content written to {relative_path} successfully"
+        return self.terminal.write_file(arguments[WriteFileAction.FILE_PATH], arguments[WriteFileAction.CONTENT])
