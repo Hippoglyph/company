@@ -4,7 +4,7 @@ from factory.agent_factory import AgentFactory
 from logs.graph.graph_maker import GraphMaker
 
 def run():
-
+    
     agents = AgentFactory.build()
 
     graph = GraphMaker()
