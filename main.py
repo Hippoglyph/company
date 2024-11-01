@@ -1,12 +1,15 @@
 from dotenv import load_dotenv
+
 load_dotenv(override=True)
 #from workflow import run
 
 #run()
 
-from docker_folder.docker_utils import DockerUtils
+from enviroment.terminal import Terminal
 
-container_name = "test_name"
-DockerUtils.bash(container_name, "touch file1")
+terminal = Terminal("test_name")
 
-DockerUtils.stop(container_name)
+terminal.bash('echo "print(\'hello world\')" > script.py')
+terminal.bash("python script.py")
+
+terminal.close()
