@@ -7,7 +7,7 @@ class FileUtils:
 
     @staticmethod
     @cache
-    def _get_root() -> Path:
+    def get_root() -> Path:
         root = Path(os.getcwd())
         while root.parent != root:
             if (root / '.git').exists() or (root / '..venv').exists():

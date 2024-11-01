@@ -1,18 +1,35 @@
 from functools import cache
+import os
+import subprocess
 import docker
+from docker import DockerClient
 from docker.models.containers import Container
+
+from utils.file_utils import FileUtils
 
 class Terminal:
 
     def __init__(self, run_id : str):
-        self.run_id = run_id
+        self.container = Terminal._get_container(run_id)
 
     def bash(self, cmd : str) -> str:
-        #return Terminal._run_command_in_docker_bash(self.run_id, cmd)
-        print(Terminal._run_command_in_docker_bash(self.run_id, cmd))
+        exec_result = self.container.exec_run(f"sh -c '{cmd}'", tty=True, user="Agent")
+        return exec_result.output.decode('utf-8').strip()
     
     def close(self) -> None:
-        Terminal._get_container(self.run_id).stop()
+        self.container.stop()
+
+    def write_file(self, file_path: str, content: str) -> str:
+        temp_file_path = FileUtils.get_root() / "tmp"
+        with open(temp_file_path, 'w') as temp_file:
+            temp_file.write(content)
+
+        target_directory = self.bash(f"dirname {file_path}")
+        self.bash(f"mkdir -p {target_directory}")
+
+        subprocess.run(["docker", "cp", temp_file_path, f"{self.container.name}:app/{file_path}"], check=True)
+        os.remove(temp_file_path)
+        return f"Successfully wrote to {file_path}" # TODO error handling
 
     @cache
     @staticmethod
@@ -25,10 +42,3 @@ class Terminal:
             return container
         except docker.errors.NotFound:
             return client.containers.run("company-image", name=container_name, detach=True, tty=True)
-        
-    @staticmethod
-    def _run_command_in_docker_bash(container_name : str, cmd : str) -> str:
-        container = Terminal._get_container(container_name)
-        exec_result = container.exec_run(f"sh -c '{cmd}'", tty=True, user="Agent")
-        return exec_result.output.decode('utf-8')
-

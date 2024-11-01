@@ -22,7 +22,7 @@ class WriteFileAction(Action):
     def execute(self, arguments : dict) -> str:
         # TODO sanity check
         relative_path = arguments[WriteFileAction.FILE_PATH]
-        full_path : Path = FileUtils._get_root() / relative_path
+        full_path : Path = FileUtils.get_root() / relative_path
         full_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(full_path, 'w') as file:

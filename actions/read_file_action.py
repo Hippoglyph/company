@@ -19,7 +19,7 @@ class ReadFileAction(Action):
     def execute(self, arguments : dict) -> str:
         # TODO sanity check
         relative_path = arguments[ReadFileAction.FILE_PATH]
-        full_path : Path = FileUtils._get_root() / relative_path
+        full_path : Path = FileUtils.get_root() / relative_path
 
         if not full_path.exists():
             return f"The file {relative_path} does not exist"

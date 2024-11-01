@@ -9,7 +9,7 @@ from enviroment.terminal import Terminal
 
 terminal = Terminal("test_name")
 
-terminal.bash('echo "print(\'hello world\')" > script.py')
-terminal.bash("python script.py")
+print(terminal.write_file("folder/tmp/script.py", "print('hello world')"))
+print(terminal.bash("python folder/tmp/script.py"))
 
 terminal.close()
