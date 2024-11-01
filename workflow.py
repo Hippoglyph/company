@@ -17,7 +17,8 @@ def run():
     response = agent.send_message("Welcome to The Company. How can we help you?")
     while True:
         action, arguments = agent.choose_action(response)
-        log.log(action=action, arguments=arguments, response=response)
         if isinstance(action, SendMessageAction):
             agent = AgentTracker.get(action.get_receiver_name(arguments))
-        response = agent.send_message(action.execute(arguments))
+        action_response = action.execute(arguments)
+        log.log(action=action, arguments=arguments, response=response, action_response = action_response)
+        response = agent.send_message(action_response)

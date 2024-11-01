@@ -25,12 +25,14 @@ class GraphMaker:
                 self.actions[action.get_name()] = action
         
         for action_name, action in self.actions.items():
+            if isinstance(action, SendMessageAction):
+                continue
             tooltip_content = html.escape(action.get_description())
-            self.graph.node(action_name, action_name, tooltip = tooltip_content)
+            self.graph.node(action_name, action_name, tooltip=tooltip_content, style='dashed')
 
         self.render()
 
-    def action(self, action : Action, arguments : dict, response : str) -> None:
+    def action(self, action : Action, arguments : dict, response : str, action_response : str) -> None:
         self.edge_id += 1
         tooltip_content = html.escape(response)
         if isinstance(action, SendMessageAction):
@@ -38,7 +40,7 @@ class GraphMaker:
         else:
             self.graph.edge(arguments[Action.CALLER_AGENT].get_name(), action.get_name(), label=str(self.edge_id), tooltip = tooltip_content)
             self.edge_id += 1
-            self.graph.edge(action.get_name(), arguments[Action.CALLER_AGENT].get_name(), label=str(self.edge_id), tooltip = tooltip_content)
+            self.graph.edge(action.get_name(), arguments[Action.CALLER_AGENT].get_name(), label=str(self.edge_id), tooltip = html.escape(action_response))
 
         self.render()
 

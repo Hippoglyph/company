@@ -8,5 +8,5 @@ class Log:
         self.graph = GraphMaker()
         self.graph.new_graph(run_id, agents)
 
-    def log(self, action : Action, arguments : dict, response : str) -> None:
-        self.graph.action(action=action, arguments=arguments, response=response)
+    def log(self, action : Action, arguments : dict, response : str, action_response : str) -> None:
+        self.graph.action(action=action, arguments=arguments, response=response, action_response = action_response)
