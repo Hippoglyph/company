@@ -15,3 +15,6 @@ class Action:
     
     def execute(self, arguments : dict) -> str:
         pass
+
+    def prettify(self, arguments : dict) -> str:
+        return ""

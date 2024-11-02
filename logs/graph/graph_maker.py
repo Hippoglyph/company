@@ -13,13 +13,13 @@ class GraphMaker:
 
     def new_graph(self, name : str, agents : list[Agent]) -> None:
         self.graph = graphviz.Digraph()
+        self.graph_full = graphviz.Digraph()
         self.name = name
         self.edge_id = 0
         self.actions = {}
 
         for agent in agents:
-            tooltip_content = html.escape(agent.system_message)
-            self.graph.node(agent.get_name(), agent.get_name(), tooltip = tooltip_content)
+            self._make_dubble_node(agent.get_name(), agent.system_message)
             actions = agent.get_actions()
             for action in actions:  
                 self.actions[action.get_name()] = action
@@ -27,27 +27,27 @@ class GraphMaker:
         for action_name, action in self.actions.items():
             if isinstance(action, SendMessageAction):
                 continue
-            tooltip_content = html.escape(action.get_description())
-            self.graph.node(action_name, action_name, tooltip=tooltip_content, style='dashed')
+            self._make_dubble_node(action_name, action.get_description(), is_action = True)
 
         self.render()
 
     def action(self, action : Action, arguments : dict, response : str, action_response : str) -> None:
         self.edge_id += 1
-        tooltip_content = html.escape(response)
         if isinstance(action, SendMessageAction):
-            self.graph.edge(arguments[Action.CALLER_AGENT].get_name(), arguments[SendMessageAction.RECEIVER], label=str(self.edge_id), tooltip = tooltip_content)
+            self._make_edge(arguments[Action.CALLER_AGENT].get_name(), arguments[SendMessageAction.RECEIVER], str(self.edge_id), action_response, response)
         else:
-            self.graph.edge(arguments[Action.CALLER_AGENT].get_name(), action.get_name(), label=str(self.edge_id), tooltip = tooltip_content)
+            self._make_edge(arguments[Action.CALLER_AGENT].get_name(), action.get_name(), str(self.edge_id), action.prettify(arguments), response)
             self.edge_id += 1
-            self.graph.edge(action.get_name(), arguments[Action.CALLER_AGENT].get_name(), label=str(self.edge_id), tooltip = html.escape(action_response))
+            self._make_edge(action.get_name(), arguments[Action.CALLER_AGENT].get_name(), str(self.edge_id), action_response, action_response)
 
         self.render()
 
     def render(self) -> None:
         file_path = os.path.join(GraphMaker.PARENT_FILE_PATH, "tmp", self.name)
         self.graph.render(file_path, format='svg')
+        self.graph_full.render(file_path+"_full", format='svg')
         self.create_html_with_js(file_path + '.svg')
+        self.create_html_with_js(file_path+"_full" + '.svg')
 
     @staticmethod
     @cache
@@ -67,4 +67,16 @@ class GraphMaker:
         html_file = svg_file.replace('.svg', '.html')
         with open(html_file, 'w') as f:
             f.write(html_content)
+
+    def _make_dubble_node(self, name : str, tooltip : str, is_action : bool = False) -> None:
+        GraphMaker._make_node(self.graph, name, tooltip, is_action = is_action)
+        GraphMaker._make_node(self.graph_full, name, tooltip, is_action = is_action)
+
+    def _make_node(graph : graphviz.Digraph, name : str, tooltip : str, is_action : bool = False) -> None:
+        graph.node(name, name, tooltip = html.escape(tooltip), style = "dashed" if is_action else "solid")
+
+    def _make_edge(self, from_name : str, to_name : str, label : str, tooltip : str, tooltip_full : str) -> None:
+        self.graph.edge(from_name, to_name, label=label, tooltip = html.escape(tooltip))
+        self.graph_full.edge(from_name, to_name, label=label, tooltip = html.escape(tooltip_full))
+
         

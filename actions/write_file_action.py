@@ -14,7 +14,7 @@ class WriteFileAction(Action):
         return "WriteFile"
 
     def get_description(self) -> str:
-        return "Writes the content to the file_path. Relative to root"
+        return "Writes (or overrides) the content to the file_path. Relative to root"
 
     def get_arguments(self) -> dict:
         return {WriteFileAction.FILE_PATH : "The path to the file. E.g folder/subfolder/executeable.typ",
@@ -24,3 +24,6 @@ class WriteFileAction(Action):
     def execute(self, arguments : dict) -> str:
         # TODO sanity check
         return self.terminal.write_file(arguments[WriteFileAction.FILE_PATH], arguments[WriteFileAction.CONTENT])
+    
+    def prettify(self, arguments : dict) -> str:
+        return f"Write to {arguments[WriteFileAction.FILE_PATH]}\n\n{arguments[WriteFileAction.CONTENT]}"

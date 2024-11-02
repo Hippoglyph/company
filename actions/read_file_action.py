@@ -24,3 +24,6 @@ class ReadFileAction(Action):
         file_content = self.terminal.bash(f"cat {relative_path}")
 
         return f"The file {relative_path} contained:\n{file_content}"
+    
+    def prettify(self, arguments : dict) -> str:
+        return f"Read from {arguments[ReadFileAction.FILE_PATH]}"
