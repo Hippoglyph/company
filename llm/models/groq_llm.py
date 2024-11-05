@@ -13,3 +13,7 @@ class GroqLLM(LLM):
 
     def _get_chat(self) -> Chat:
         return self.client.chat
+    
+    @staticmethod
+    def is_retry_exception(exception : Exception) -> bool:
+        return exception.status_code == 413 and exception.response.json()['error']['code'] == 'rate_limit_exceeded'

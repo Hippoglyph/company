@@ -1,3 +1,5 @@
+import random
+import time
 from openai.resources.chat import Chat
 
 class LLM:
@@ -10,13 +12,27 @@ class LLM:
 
     def query(self, system_message : str, message : str, chat_history : list [dict] = []) -> str:
         messages = LLM._package_messages(system_message, message, chat_history)
-        chat_completion = self._get_chat().completions.create(
-            messages=messages,
-            model=self._get_model_id(),
-            temperature=0,
-            top_p=0.95
-        )
+        max_retries = 5
+        for attempt in range(max_retries):
+            try:
+                chat_completion = self._get_chat().completions.create(
+                    messages=messages,
+                    model=self._get_model_id(),
+                    temperature=0,
+                    top_p=0.95
+                )
+                break
+            except Exception as e:
+                if LLM.is_retry_exception(e):
+                    print(f"Rate limit exceeded. Retrying in a moment (attempt {attempt + 1}/{max_retries})")
+                    LLM.exponential_backoff(attempt)
+                else:
+                    raise e
         return chat_completion.choices[0].message.content
+    
+    def exponential_backoff(attempt, max_delay=60):
+        delay = min(2 ** attempt + random.random(), max_delay)
+        time.sleep(delay)
 
     
     @staticmethod
@@ -53,3 +69,7 @@ class LLM:
 
     def _get_chat(self) -> Chat:
         pass
+    
+    @staticmethod
+    def is_retry_exception(exception : Exception) -> bool:
+        return False
