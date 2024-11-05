@@ -13,7 +13,7 @@ class ReadFileAction(Action):
         return "ReadFile"
 
     def get_description(self) -> str:
-        return "Read the content to the file_path. Relative to root"
+        return "Read the content to the file_path. Relative to root."
 
     def get_arguments(self) -> dict:
         return {ReadFileAction.FILE_PATH : "The path to the file. E.g folder/subfolder/executeable.typ"}
@@ -21,9 +21,10 @@ class ReadFileAction(Action):
     def execute(self, arguments : dict) -> str:
         # TODO sanity check
         relative_path = arguments[ReadFileAction.FILE_PATH]
-        file_content = self.terminal.bash(f"cat {relative_path}")
-
-        return f"The file {relative_path} contained:\n{file_content}"
+        if self.terminal.file_exists(relative_path):
+            file_content = self.terminal.bash(f"cat {relative_path}")
+            return f"The file {relative_path} contained:\n{file_content}"
+        return f"The file {relative_path} does not exists"
     
     def prettify(self, arguments : dict) -> str:
         return f"Read from {arguments[ReadFileAction.FILE_PATH]}"

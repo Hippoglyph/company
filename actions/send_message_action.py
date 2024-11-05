@@ -12,7 +12,7 @@ class SendMessageAction(Action):
         return "SendMessage"
 
     def get_description(self) -> str:
-        return "Sends a message to an agent"
+        return "Sends a message to an agent."
 
     def get_arguments(self) -> dict:
         return {SendMessageAction.RECEIVER : f"The name of the agent that you wish to send a message to. Agent names: {", ".join(self.relations_names)}",

@@ -1,3 +1,4 @@
+from actions.bash_action import BashAction
 from actions.read_file_action import ReadFileAction
 from actions.send_message_action import SendMessageAction
 from actions.write_file_action import WriteFileAction
@@ -16,16 +17,19 @@ class AgentFactory:
         agents += [
             AgentConstruct(AgentNames.ARCHITECT)
                 .with_action(SendMessageAction([AgentNames.CODER]))
+                .with_action(BashAction(run_id))
                 .is_human()
             ,
             AgentConstruct(AgentNames.CODER)
                 .with_action(SendMessageAction([AgentNames.ARCHITECT, AgentNames.CODE_REVIEWER]))
                 .with_action(WriteFileAction(run_id))
                 .with_action(ReadFileAction(run_id))
+                .with_action(BashAction(run_id))
             ,
             AgentConstruct(AgentNames.CODE_REVIEWER)
                 .with_action(SendMessageAction([AgentNames.CODER]))
                 .with_action(ReadFileAction(run_id))
+                .with_action(BashAction(run_id))
         ]
         return agents
     

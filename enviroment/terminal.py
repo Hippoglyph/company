@@ -11,13 +11,22 @@ class Terminal:
         self.container = Terminal._get_container(run_id)
 
     def bash(self, cmd : str) -> str:
-        exec_result = self.container.exec_run(f"sh -c '{cmd}'", tty=True, user="Agent")
-        return exec_result.output.decode('utf-8').strip()
+        exec_result = self.container.exec_run(f"sh -c '{cmd}'", user="Agent")
+        exit_code = exec_result.exit_code
+        output = exec_result.output.decode('utf-8').strip()
+        
+        if exit_code != 0:
+            return f"Command failed with exit code {exit_code}: {output}"
+        
+        return output
     
     def close(self) -> None:
         self.container.stop()
 
     def write_file(self, file_path: str, content: str) -> str:
+        if self.file_exists(file_path):
+            return f"Could not write to file {file_path}. Already exists."
+        
         temp_file_path = Terminal.get_tmp_folder() / "tmp"
         with open(temp_file_path, 'w') as temp_file:
             temp_file.write(content)
@@ -25,9 +34,18 @@ class Terminal:
         target_directory = self.bash(f"dirname {file_path}")
         self.bash(f"mkdir -p {target_directory}")
 
-        subprocess.run(["docker", "cp", temp_file_path, f"{self.container.name}:app/{file_path}"], check=True, stdout=subprocess.DEVNULL)
-        os.remove(temp_file_path)
-        return f"Successfully wrote to {file_path}" # TODO error handling
+        try:
+            subprocess.run(["docker", "cp", temp_file_path, f"{self.container.name}:/app/{file_path}"], check=True, stdout=subprocess.DEVNULL)
+            os.remove(temp_file_path)
+            return f"Successfully wrote to {file_path}"
+        except subprocess.CalledProcessError:
+            os.remove(temp_file_path)
+            return f"Error writing to {file_path}"
+        
+    def file_exists(self, file_path: str) -> bool:
+        # Check if the file already exists in the container
+        check_file_cmd = f"test -f /app/{file_path} && echo 'exists' || echo 'not exists'"
+        return self.bash(check_file_cmd).strip() == 'exists'
 
     @cache
     @staticmethod
