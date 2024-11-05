@@ -1,3 +1,4 @@
+import groq
 from llm.llm import LLM
 from groq import Groq
 from openai.resources.chat import Chat
@@ -16,4 +17,7 @@ class GroqLLM(LLM):
     
     @staticmethod
     def is_retry_exception(exception : Exception) -> bool:
-        return exception.status_code == 413 and exception.response.json()['error']['code'] == 'rate_limit_exceeded'
+        if isinstance(exception, groq.APIStatusError):
+            return (exception.status_code == 413 and 
+                    exception.body.get('error', {}).get('code') == 'rate_limit_exceeded')
+        return False

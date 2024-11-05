@@ -15,10 +15,13 @@ class AgentFactory:
         agents = []
 
         agents += [
-            AgentConstruct(AgentNames.ARCHITECT)
-                .with_action(SendMessageAction([AgentNames.CODER]))
-                .with_action(BashAction(run_id))
+            AgentConstruct(AgentNames.PRODUCT_OWNER)
+                .with_action(SendMessageAction([AgentNames.ARCHITECT]))
                 .is_human()
+            ,
+            AgentConstruct(AgentNames.ARCHITECT)
+                .with_action(SendMessageAction([AgentNames.CODER, AgentNames.PRODUCT_OWNER]))
+                .with_action(BashAction(run_id))
             ,
             AgentConstruct(AgentNames.CODER)
                 .with_action(SendMessageAction([AgentNames.ARCHITECT, AgentNames.CODE_REVIEWER]))
