@@ -21,6 +21,7 @@ class AgentFactory:
             ,
             AgentConstruct(AgentNames.ARCHITECT)
                 .with_action(SendMessageAction([AgentNames.CODER, AgentNames.PRODUCT_OWNER]))
+                .with_action(ReadFileAction(run_id))
                 .with_action(BashAction(run_id))
             ,
             AgentConstruct(AgentNames.CODER)

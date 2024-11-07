@@ -16,7 +16,7 @@ class BashAction(Action):
         return "A non-interactive bash terminal running on a Ubuntu system."
 
     def get_arguments(self) -> dict:
-        return {BashAction.COMMAND : "The command. E.g ls -a"}
+        return {BashAction.COMMAND : "The command. E.g rm script.js"}
     
     def execute(self, arguments : dict) -> str:
         # TODO sanity check

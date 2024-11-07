@@ -23,7 +23,7 @@ class LLM:
                 )
                 break
             except Exception as e:
-                if LLM.is_retry_exception(e):
+                if self.is_retry_exception(e):
                     print(f"Rate limit exceeded. Retrying in a moment (attempt {attempt + 1}/{max_retries})")
                     LLM.exponential_backoff(attempt)
                 else:
@@ -34,7 +34,6 @@ class LLM:
         delay = min(2 ** attempt + random.random(), max_delay)
         time.sleep(delay)
 
-    
     @staticmethod
     def _package_messages(system_message : str, message : str, chat_history : list [dict]) -> list[dict]:
         messages = [
@@ -70,6 +69,19 @@ class LLM:
     def _get_chat(self) -> Chat:
         pass
     
-    @staticmethod
-    def is_retry_exception(exception : Exception) -> bool:
+    def is_retry_exception(self, exception : Exception) -> bool:
         return False
+    
+    def get_token_limit(self) -> int:
+        return 0
+    
+    def get_token_count(self, role : str, content : str) -> int:
+        return 0
+    
+    def get_tokens_count(self, history : list[dict]) -> int:
+        total_tokens = 0
+
+        for message in history:
+            total_tokens += self.get_token_count(message[LLM.ROLE], message[LLM.CONTENT])
+
+        return total_tokens

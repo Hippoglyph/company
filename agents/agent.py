@@ -26,8 +26,13 @@ class Agent:
             response = self._get_human_response(message)
         else:
             response = self.llm.query(self.system_message, message, self.chat_history)
-        self.chat_history += LLM.package_history(message, response)
+        self._handle_history(message, response)
         return response
+    
+    def _handle_history(self, message : str, response : str) -> None:
+        self.chat_history += LLM.package_history(message, response)
+        while self.llm.get_tokens_count(self.chat_history) > self.llm.get_token_limit() - self.llm.get_token_count(LLM.ROLE_SYSTEM, self.system_message):
+            self.chat_history = self.chat_history[:-2] # Remove one interaction at the time
     
     def choose_action(self, response : str) -> tuple[Action, dict]:
         arguments = Parse.action(response)

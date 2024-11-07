@@ -14,7 +14,7 @@ class WriteFileAction(Action):
         return "WriteFile"
 
     def get_description(self) -> str:
-        return "Writes the content to the file_path. Relative to root."
+        return "Writes the content to the file_path. Relative to root. Can not override files. Use bash command to delete files if you wish to override."
 
     def get_arguments(self) -> dict:
         return {WriteFileAction.FILE_PATH : "The path to the file. E.g folder/subfolder/executeable.typ",
