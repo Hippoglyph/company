@@ -34,7 +34,7 @@ Do I understand what I need to do?
 What actions do I need to do to achieve that?
 What is the next best action?
 
-```
+```action
 <action>
     <action_name>{name of the action}</action_name>
     <{argument name}>{value of argument name}</{argument name}>

@@ -21,6 +21,7 @@ class SendMessageAction(Action):
     
     def _sanity_check(arguments : dict) -> str:
         if SendMessageAction.RECEIVER not in arguments:
+            print(arguments)
             return "Could not find a receiver"
         if SendMessageAction.CONTENT not in arguments:
             return "Message contained no content"
@@ -30,13 +31,14 @@ class SendMessageAction(Action):
     def execute(self, arguments : dict) -> str:
         if SendMessageAction._sanity_check(arguments):
             print(SendMessageAction._sanity_check(arguments))
-            return None # TODO fix
+            arguments[SendMessageAction.RECEIVER] = arguments[Action.CALLER_AGENT]
+            return SendMessageAction._sanity_check(arguments)
         
         header = f"{arguments[Action.CALLER_AGENT].get_name()}:\n"
         return header + arguments[SendMessageAction.CONTENT]
     
     def get_receiver_name(self, arguments : dict) -> str:
-        return arguments[SendMessageAction.RECEIVER] # TODO Sanity check
+        return arguments[SendMessageAction.RECEIVER]
     
     def get_relations_names(self) -> list[str]:
         return self.relations_names

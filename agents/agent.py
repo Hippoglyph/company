@@ -1,4 +1,5 @@
 from actions.action import Action
+from actions.failed_action import FailedAction
 from actions.send_message_action import SendMessageAction
 from agents.utils.parse import Parse
 from llm.llm import LLM
@@ -36,14 +37,17 @@ class Agent:
     
     def choose_action(self, response : str) -> tuple[Action, dict]:
         arguments = Parse.action(response)
+        arguments[Action.CALLER_AGENT] = self
+        if Action.NAME not in arguments:
+            print("Failed do find action")
+            return FailedAction(), arguments
         if arguments[Action.NAME] in self.actions:
             selected_action = self.actions[arguments[Action.NAME]]
             del arguments[Action.NAME]
-            arguments[Action.CALLER_AGENT] = self
             return selected_action, arguments
         else:
             print("Failed do find action")
-            return None, None
+            return FailedAction(), arguments
         
     def is_human(self) -> bool:
         return self.human

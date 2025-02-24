@@ -1,4 +1,5 @@
 from actions.bash_action import BashAction
+from actions.failed_action import FailedAction
 from actions.read_file_action import ReadFileAction
 from actions.send_message_action import SendMessageAction
 from actions.write_file_action import WriteFileAction
@@ -17,6 +18,7 @@ class AgentFactory:
         agents += [
             AgentConstruct(AgentNames.PRODUCT_OWNER)
                 .with_action(SendMessageAction([AgentNames.ARCHITECT]))
+                .with_action(FailedAction())
                 .is_human()
             ,
             AgentConstruct(AgentNames.ARCHITECT)
