@@ -9,6 +9,7 @@ class GeminiLLM(LLM):
     TOKENIZER = tiktoken.get_encoding("cl100k_base")
     
     def __init__(self, model_id : str, token_limit : int):
+        super().__init__()
         self.client = OpenAI(
             api_key=os.getenv("GEMINI_API_KEY"),
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
@@ -27,3 +28,6 @@ class GeminiLLM(LLM):
     
     def get_token_count(self, role : str, content : str) -> int:
         return len(GeminiLLM.TOKENIZER.encode(f"{role}: {content}"))
+    
+    def get_rpm_limit(self) -> int:
+        return 15

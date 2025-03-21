@@ -1,6 +1,7 @@
 from functools import cache
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import docker
 from docker.models.containers import Container
@@ -46,6 +47,22 @@ class Terminal:
         # Check if the file already exists in the container
         check_file_cmd = f"test -f /app/{file_path} && echo 'exists' || echo 'not exists'"
         return self.bash(check_file_cmd).strip() == 'exists'
+    
+    def copy_from_container(self,  local_path: str, container_path: str = "") -> str:
+        try:
+            local_path_obj = Path(local_path)
+            if local_path_obj.exists():
+                try:
+                    if local_path_obj.is_file():
+                        os.remove(local_path)
+                    else:
+                        shutil.rmtree(local_path) # Use shutil for removing directories recursively
+                except OSError as e:
+                    return f"Error deleting existing path '{local_path}': {e}"
+            subprocess.run(["docker", "cp", f"{self.container.name}:/app/{container_path}", local_path], check=True, stdout=subprocess.DEVNULL)
+            return f"Successfully copied '{container_path}' from container to '{local_path}'."
+        except subprocess.CalledProcessError as e:
+            return f"Error copying 'app/{container_path}' from container to '{local_path}': {e}"
 
     @cache
     @staticmethod

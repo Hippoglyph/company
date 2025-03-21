@@ -1,7 +1,9 @@
 from actions.action import Action
+from actions.bash_action import BashAction
 from actions.failed_action import FailedAction
 from actions.send_message_action import SendMessageAction
 from agents.utils.parse import Parse
+from enviroment.terminal import Terminal
 from llm.llm import LLM
 from prompts_utils.prompt_handler import PromptHandler
 
@@ -53,6 +55,12 @@ class Agent:
         return self.human
     
     def _get_human_response(self, message : str) -> str:
+        copy_response = None
+        for action_name, action  in self.actions.items():
+            if isinstance(action, BashAction):
+                copy_response = action.terminal.copy_from_container("output")
+        if copy_response is None:
+            raise RuntimeError("Human could not copy")
         print(message)
         light_response = input(">")
         for action_name, action  in self.actions.items():

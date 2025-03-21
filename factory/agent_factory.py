@@ -18,6 +18,7 @@ class AgentFactory:
         agents += [
             AgentConstruct(AgentNames.PRODUCT_OWNER)
                 .with_action(SendMessageAction([AgentNames.ARCHITECT]))
+                .with_action(BashAction(run_id))
                 .with_action(FailedAction())
                 .is_human()
             ,
